@@ -5,3 +5,4 @@ SpeechRecognition
 requests
 joblib
 nltk
+youtube-comment-downloader
