@@ -6,4 +6,4 @@ requests
 joblib
 nltk
 youtube-comment-downloader
-altair==4.2.2
+altair
