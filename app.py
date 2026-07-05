@@ -40,6 +40,25 @@ def load_model_files():
 
 model, vectorizer = load_model_files()
 
+COMMENT_COLUMN_ALIASES = [
+    "tweet_text",
+    "full_text",
+    "comment",
+    "comments",
+    "review",
+    "text",
+    "content",
+    "message",
+]
+
+
+def find_comment_column(columns) -> str | None:
+    lookup = {str(column).strip().lower(): column for column in columns}
+    for alias in COMMENT_COLUMN_ALIASES:
+        if alias in lookup:
+            return str(lookup[alias])
+    return None
+
 # --------------------------------------------------
 # Basic Netflix-style CSS (ASCII only)
 # --------------------------------------------------
@@ -244,7 +263,7 @@ with tab_youtube:
 
     # -------- Subtab 2: CSV upload --------
     with sub2:
-        file = st.file_uploader("Upload CSV file (first column should have comments):",
+        file = st.file_uploader("Upload CSV file with comments or review text:",
                                 type=["csv"])
         if st.button("Analyze CSV Comments"):
             if file is None:
@@ -252,13 +271,18 @@ with tab_youtube:
             else:
                 try:
                     df = pd.read_csv(file)
-                    column = df.columns[0]
-                    comments = df[column].dropna().astype(str).tolist()
+                    column = find_comment_column(df.columns) or str(df.columns[0])
+                    comments = [
+                        comment
+                        for comment in df[column].fillna("").astype(str).str.strip().tolist()
+                        if comment
+                    ]
 
                     if not comments:
                         st.warning("No comments found in CSV.")
                     else:
                         st.success("Loaded {} comments. Analyzing...".format(len(comments)))
+                        st.caption("Detected comment column: {}".format(column))
                         pos = neg = neu = 0
                         progress = st.progress(0.0)
                         total = len(comments)
