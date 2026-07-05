@@ -20,7 +20,8 @@ UI Preview
 Features
 ✔ Text sentiment analysis  
 ✔ Bulk YouTube comments analysis  
-✔ CSV file sentiment analysis  
+✔ CSV file sentiment analysis with `tweet_text`, `full_text`, `comment`, `review`, `text`, `content`, or `message` columns
+✔ Empty CSV comment rows are skipped before analysis
 ✔ Visual charts for Positive / Negative / Neutral
 
 Tech Stack
